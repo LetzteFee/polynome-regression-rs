@@ -39,6 +39,7 @@ impl Point {
 struct Polynom {
     koeffizienten: Vec<Koeffizient>,
     plot: Vec<Point>,
+    delta_expo: i32,
 }
 impl Polynom {
     fn new(grad: i32, plot: Vec<Point>) -> Polynom {
@@ -49,6 +50,7 @@ impl Polynom {
         Polynom {
             koeffizienten: ke,
             plot: plot,
+            delta_expo: 2,
         }
     }
     fn f(&self, x: f64) -> f64 {
@@ -61,11 +63,10 @@ impl Polynom {
     fn delta(&self) -> f64 {
         let mut delta: f64 = 0.0;
         for i in &self.plot {
-            let mut tmp: f64 = f64::from(i.y) - self.f(f64::from(i.x));
-            tmp = tmp.abs();
-            delta += tmp.powf(2.0);
+            delta += (f64::from(i.y) - self.f(f64::from(i.x)))
+                .abs()
+                .powi(self.delta_expo);
         }
-
         delta
     }
     fn improve(&mut self) {
@@ -117,7 +118,7 @@ fn main() {
         ],
     );
     let mut delta: f64 = regression.delta();
-    for i in 0..5000 {
+    for i in 0..1000 {
         for _j in 0..1000 {
             regression.improve();
         }
