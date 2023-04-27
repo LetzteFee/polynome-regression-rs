@@ -4,11 +4,11 @@ struct Koeffizient {
     expo: i32,
 }
 impl Koeffizient {
-    fn new(e: i32) -> Koeffizient {
+    fn new(expo: i32) -> Koeffizient {
         Koeffizient {
             value: 0.0,
             sum: 1.0,
-            expo: e,
+            expo,
         }
     }
     fn increase_value(&mut self) {
@@ -33,7 +33,7 @@ struct Point {
 }
 impl Point {
     fn new(x: i32, y: i32) -> Point {
-        Point { x: x, y: y }
+        Point { x, y }
     }
 }
 struct Polynom {
@@ -43,13 +43,13 @@ struct Polynom {
 }
 impl Polynom {
     fn new(grad: i32, plot: Vec<Point>) -> Polynom {
-        let mut ke: Vec<Koeffizient> = Vec::new();
+        let mut koeffizienten: Vec<Koeffizient> = Vec::new();
         for i in 0..(grad + 1) {
-            ke.push(Koeffizient::new(i));
+            koeffizienten.push(Koeffizient::new(i));
         }
         Polynom {
-            koeffizienten: ke,
-            plot: plot,
+            koeffizienten,
+            plot,
             delta_expo: 2,
         }
     }
@@ -96,13 +96,8 @@ impl Polynom {
     }
     fn print(&self) -> String {
         let mut output: String = String::new();
-        let mut tmp1: f64;
-        let mut tmp2: i32;
-
-        for i in 0..self.koeffizienten.len() {
-            tmp1 = self.koeffizienten[i].value;
-            tmp2 = self.koeffizienten[i].expo;
-            output += &format!("+ {}*x^{} ", tmp1, tmp2);
+        for i in &self.koeffizienten {
+            output += &format!("+ {}*x^{} ", i.value, i.expo);
         }
         output
     }
@@ -118,8 +113,8 @@ fn main() {
         ],
     );
     let mut delta: f64 = regression.delta();
-    for i in 0..1000 {
-        for _j in 0..1000 {
+    for i in 0..10 {
+        for _j in 0..5000 {
             regression.improve();
         }
 
@@ -133,6 +128,4 @@ fn main() {
             break;
         }
     }
-    println!("{}", regression.delta());
-    println!("{}", regression.print());
 }
